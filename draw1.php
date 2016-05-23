@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:svg="http://www.w3.org/2000/svg"
@@ -11,15 +11,20 @@
     <script type="text/javascript" src="./jsgl.min.js"></script>
   </head>
   <body>
-   
+
+   <div id="title">
+   		<h1>Art Attack</h1>
+
+   </div>
+
     <div id="panel" style="width: 640px; height: 480px">
-       <canvas id="drawing" width="440" height="220" style="border:2px solid #c3c3c3;" >
-    </div>      
-    </canvas>
+       <canvas id="drawing" width="440" height="220" style="border:2px solid #c3c3c3;" >  </canvas>
+    </div>
+
     <script type="text/javascript">
       /* Instantiate JSGL Panel. */
       myPanel = new jsgl.Panel(document.getElementById("panel"));
- 
+
       /* Start drawing! */
       function circle(x,y,radius,temp){
       /* Create circle and modify it */
@@ -63,7 +68,7 @@ $query="select * from draw";
 $res=mysql_query($query);
 
 while($row=mysql_fetch_array($res))
- { 
+ {
   if($row['shape']=="circle"){
     $x=$row['xco'];
     $y=$row['yco'];
@@ -73,14 +78,14 @@ while($row=mysql_fetch_array($res))
       echo "circle($x,$y,$rad,'$sno')";
       echo "\n";
     }
-    
+
   else if($row['shape']=="label"){
       $sno=$row['S.no'];
       echo "label($row[xco],$row[yco],'$row[text]','$sno')";
       echo "\n";
      }
-     
-      
+
+
 }
 
 /*
@@ -94,7 +99,7 @@ echo "\n";
 
 */
 ?>
-     
+
      </script>
   </body>
 </html>

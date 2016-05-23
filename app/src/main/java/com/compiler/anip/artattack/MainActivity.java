@@ -36,16 +36,18 @@ public class MainActivity extends Activity {
     RequestQueue queue;
     private ImageButton btnSpeak;
     private final int REQ_CODE_SPEECH_INPUT = 100;
-    int xco=0,yco=0;
+    int xco=0,yco=0,width=0,height=0;
     String shape=null;
     int[] numbers;
     int radius=0;
     String text=null;
+    String scolor=null;
+    String fcolor=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        queue= Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(this);
         txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         txtSpeechInput.setText("Which shape do you want to draw");
         btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
@@ -141,7 +143,9 @@ public class MainActivity extends Activity {
                         };
                     } else {
 
-                        String temp = result.get(0);
+                        String temp = result.get(0)+" ";
+                        String sfind="stroke colour black";
+                        String ffind="fill colour blue";
                         Pattern p = Pattern.compile("\\d+");
                         Matcher m = p.matcher(temp);
                         int i = 0;
@@ -149,28 +153,80 @@ public class MainActivity extends Activity {
                             numbers[i] = Integer.parseInt(m.group());
                             i++;
                         }
-                        String[] parseString = temp.split(" ");
+                        Pattern pattern = Pattern.compile("stroke colour (.*?) ");
+                        Matcher matcher = pattern.matcher(temp);
+                        int index=0;
+                        while (matcher.find()) {
+                            sfind=matcher.group(0);
+                        }
+                        Pattern pattern2 = Pattern.compile("fill colour (.*?) ");
+                        Matcher matcher2 = pattern2.matcher(temp);
+                        int index2=0;
+                        while (matcher2.find()) {
+                            ffind=matcher2.group(0);
+                        }
 
+                        String[] scolorarr = sfind.split(" ");
+                        String[] fcolorarr = ffind.split(" ");
+                        scolor = scolorarr[2];
+                        fcolor = fcolorarr[2];
+
+                        if(temp!=null) {
+                            String[] parseString = temp.split(" ");
+                        }
                         if (temp.contains("circle") || temp.contains("Circle") || temp.contains("CIRCLE")) {
                             xco = numbers[0];
                             yco = numbers[1];
                             radius = numbers[2];
+
+                            //Log.i("hell","dfdf"+scolor+fcolor);
                             shape = "circle";
+
                         }
                         else if (temp.contains("label")){
-                            Pattern pattern = Pattern.compile("text ");
-                            Matcher matcher = pattern.matcher(temp);
-                            int index=0;
+                            Pattern pattern3 = Pattern.compile("text (.*?) ");
+                            Matcher matcher3 = pattern2.matcher(temp);
+                            while (matcher3.find()) {
+                                ffind=matcher2.group(0);
+                            }    int index3=0;
+                            String[] textarr = ffind.split(" ");
+                            text = scolorarr[1];
                             // Check all occurrences
-                            while (matcher.find()) {
-                                index=matcher.end();
+                            while (matcher3.find()) {
+                                index3=matcher.end();
                             }
-                            text=temp.substring(index);
+                            //text=temp.substring(index3);
                             xco = numbers[0];
                             shape="label";
                             yco = numbers[1];
                             Log.i("hell",text);
 
+                        }
+                        else if(temp.contains("man") || temp.contains("Man")){
+                            xco=numbers[0];
+                            yco=numbers[1];
+                            shape="man";
+                        }
+                        else if(temp.contains("rectangle") || temp.contains("Rectangle")){
+                            xco=numbers[0];
+                            yco=numbers[1];
+                            width=numbers[2];
+                            height=numbers[3];
+                            shape="rectangle";
+                        }
+                        else if(temp.contains("ellipse") || temp.contains("Ellipse")){
+                            xco=numbers[0];
+                            yco=numbers[1];
+                            width=numbers[2];
+                            height=numbers[3];
+                            shape="ellipse";
+                        }
+                        else if(temp.contains("line") || temp.contains("Line")){
+                            xco=numbers[0];
+                            yco=numbers[1];
+                            width=numbers[2];
+                            height=numbers[3];
+                            shape="line";
                         }
                         final JSONObject obj = new JSONObject();
                         try {
@@ -178,7 +234,13 @@ public class MainActivity extends Activity {
                             obj.put("yco", yco);
                             obj.put("radius", radius);
                             obj.put("shape", shape);
-                            obj.put("text",text);
+                            obj.put("text", text);
+                            obj.put("scolor", scolor);
+                            obj.put("fcolor", fcolor);
+                            obj.put("width", width);
+                            obj.put("height", height);
+                           // Log.i("hell", "sdwsds" + scolor + fcolor);
+                            obj.put("fcolor", fcolor);
                             CustomRequest request = new CustomRequest(Request.Method.POST, "http://anip.xyz/cd/insert.php", null, new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
